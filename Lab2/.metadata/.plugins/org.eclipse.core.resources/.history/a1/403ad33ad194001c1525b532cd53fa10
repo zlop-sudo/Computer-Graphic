@@ -1,0 +1,121 @@
+package graphic;
+
+import java.util.*;
+
+public class Rasterization {
+	int[][] z_buffer;
+	int[][][] color_buffer;
+	int[][] screen_points;
+	Polygon[] polygons;
+	int size;
+	
+	public Rasterization() {
+	}
+	
+	public void initial(double[][] pers_points, Polygon[] polygons, int size) {
+		this.polygons = polygons;
+		this.size = size;
+		z_buffer = new int[size][size];
+		color_buffer = new int[size][size][3];
+		screen_points = new int[pers_points.length][3];
+		
+		// change the perspective points to screen coordinate
+		for (int i = 0; i < pers_points.length; i++) {
+			screen_points[i][0] = (int) ((pers_points[i][0] + 1) * size / 2);
+			screen_points[i][1] = (int) (size - (pers_points[i][1] + 1) * size / 2);
+			screen_points[i][2] = (int) (pers_points[i][2] * size);
+		}
+	}
+	
+	public void scan_Conversion() {
+		for (int i = 0; i < polygons.length; i++) {
+			List<List<double[]>> et = new LinkedList<List<double[]>>();
+			for (int j = 0; j < size; j++) {
+				et.add(new LinkedList<double[]>());
+			}
+			LinkedList<double[]> aet = new LinkedList<double[]>();
+			// get random color for this polygon
+			int[] color = random_Color();
+			
+			// initialize edge table
+			for (int j = 0; j < polygons[i].n; j++) {
+				// point1 and point2 are two points of one line of this polygon
+				int[] point1 = screen_points[polygons[i].points[j]];
+				int[] point2 = screen_points[polygons[i].points[(j + 1) % polygons[i].n]];
+				int ymin = Math.min(point1[1], point2[1]);
+				// in order to get z value of each pixel, 
+				// this data structure need to store the z value in 4th place, z slope in 5th place
+				double[] line = new double[5];
+				// y max not counted
+				line[0] = (double) Math.max(point1[1], point2[1]) - 1;
+				// x_min
+				line[1] = (double) Math.min(point1[0], point2[0]);
+				// slope
+				line[2] = (double) (point1[1] - point2[1]) / (point1[0] - point2[0]);
+				// z value
+				line[3] = (double) (point1[0] < point2[0] ? point1[2] : point2[2]);
+				// z slope (according to y + 1)
+				if (point1[0] < point2[0]) {
+					line[4] = ((double) point2[2] - point1[2]) / ((double) point2[1] - point1[1]);
+				}
+				else {
+					line[4] = ((double) point1[2] - point2[2]) / ((double) point1[1] - point2[1]);
+				}
+				// add line to edge table
+				et.get(ymin).add(line);
+			}
+			
+			// loop for every y_min
+			for (int y = 0; y < size; y++) {
+				// update AET
+				if (aet.size() != 0) {
+					Iterator<double[]> itr = aet.iterator();
+					while (itr.hasNext()) {
+						double[] line = itr.next();
+						if (line[0] == y) {
+							aet.remove(line);
+							continue;
+						}
+						// update x_min
+						line[1] = line[1] + 1 / line[2];
+						// update z
+						line[3] = line[3] + line[4];
+					}
+				}
+				// move lines from ET to AET
+				for (double[] line : et.get(y)) {
+					aet.add(line);
+				}
+				if (aet.size() == 0) {
+					continue;
+				}
+				// resort AET
+				Collections.sort(aet, new Comparator<double[]>() {
+					@Override
+					public int compare(double[] l1, double[] l2) {
+						return (int) ((l1[1] - l2[1]) * 100);
+					}
+				});
+				// update z-buffer and color-buffer
+				for (int j = 0; j < aet.size(); j+= 2) {
+					double[] left = aet.get(j);
+					double[] right = aet.get(j + 1);
+					update_buffer(left, right, color);
+				}
+			}
+		}
+	}
+	
+	public int[] random_Color() {
+		int[] res = new int[3];
+		Random rand = new Random();
+		res[0] = rand.nextInt(256);
+		res[1] = rand.nextInt(256);
+		res[2] = rand.nextInt(256);
+		return res;
+	}
+	
+	public void update_buffer(double[] left, double[] right, int[] color) {
+		
+	}
+}

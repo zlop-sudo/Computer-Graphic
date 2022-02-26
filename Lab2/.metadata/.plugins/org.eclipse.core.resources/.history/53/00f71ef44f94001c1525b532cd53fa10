@@ -1,0 +1,47 @@
+package graphic;
+
+import java.util.LinkedList;
+
+public class Rasterization {
+	int[][][] z_buffer;
+	int[][] screen_points;
+	Polygon[] polygons;
+	int size;
+	
+	public Rasterization() {
+	}
+	
+	public void initial(double[][] pers_points, Polygon[] polygons, int size) {
+		this.polygons = polygons;
+		this.size = size;
+		z_buffer = new int[size][size][3];
+		screen_points = new int[pers_points.length][3];
+		
+		// change the perspective points to screen coordinate
+		for (int i = 0; i < pers_points.length; i++) {
+			screen_points[i][0] = (int) ((pers_points[i][0] + 1) * size / 2);
+			screen_points[i][1] = (int) (size - (pers_points[i][1] + 1) * size / 2);
+			screen_points[i][2] = (int) (pers_points[i][2] * size);
+		}
+	}
+	
+	public void scan_Conversion() {
+		for (int i = 0; i < polygons.length; i++) {
+			@SuppressWarnings("rawtypes")
+			LinkedList[] et = new LinkedList[size];
+			LinkedList<Double[]> aet = new LinkedList<Double[]>();
+			// initialize edge table
+			for (int j = 0; j < polygons[i].n; j++) {
+				// point1 and point2 are two points of one line of this polygon
+				int[] point1 = screen_points[polygons[i].points[j]];
+				int[] point2 = screen_points[polygons[i].points[(j + 1) % polygons[i].n]];
+				// y max not counted
+				int ymin = Math.min(point1[1], point2[1]);
+				double ymax = (double) Math.max(point1[1], point2[1]) - 1;
+				double xmin = (double) Math.min(point1[0], point2[0]);
+				double k = (double) (point1[1] - point2[1]) / (point1[0] - point2[0]);
+				
+			}
+		}
+	}
+}
