@@ -1,0 +1,39 @@
+package graphic;
+
+import helper.Compute;
+
+// This class compute the illumination for each point in world coordinate using their normals and position
+public class Illumination {
+	public double[] l;
+	public double i_light;
+	public double i_ambient;
+	public double ka;
+	public double kd;
+	public double ks;
+	public double n;
+	public double[] viewer;
+	
+	public void initial (double[] l, double i_light, double i_ambient, double ka, double kd, double ks, double n) {
+		this.l = Compute.unit_vector(l);
+		this.i_light = i_light;
+		this.i_ambient = i_ambient;
+		this.ka = ka;
+		this.kd = kd;
+		this.ks = ks;
+		this.n = n;
+	}
+	
+	// Phong illumination model
+	public double illumination(double[] N, double[] R) {
+		double I = 0;
+		return I;
+	}
+	
+	// using the result I to compute new RGB
+	public int[] shading(double[] N, double[] point, int[] color) {
+		int[] res = new int[3];
+		double[] R = Compute.unit_vector(Compute.vector_minus(viewer, point));
+		double I = illumination(N, R);
+		return res;
+	}
+}

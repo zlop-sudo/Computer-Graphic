@@ -1,0 +1,6 @@
+package graphic;
+
+// This class compute the illumination for each point in world coordinate using their normals
+public class Illumination {
+
+}

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Graphic_lab3:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Graphic_lab3_jar</output-path>
+    <root id="archive" name="Graphic_lab3.jar">
+      <element id="module-output" name="Graphic_lab3" />
+    </root>
+  </artifact>
+</component>

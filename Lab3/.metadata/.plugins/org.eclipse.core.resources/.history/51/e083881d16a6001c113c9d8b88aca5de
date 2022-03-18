@@ -1,0 +1,34 @@
+package graphic;
+
+import helper.Compute;
+
+// This class compute the illumination for each point in world coordinate using their normals and position
+public class Illumination {
+	public double[] l = new double[3];
+	public double i_light;
+	public double i_ambient;
+	public double ka;
+	public double kd;
+	public double ks;
+	public double n;
+	
+	public void initial (double[] l, double i_light, double i_ambient, double ka, double kd, double ks, double n) {
+		this.l = Compute.unit_vector(l);
+		this.i_light = i_light;
+		this.i_ambient = i_ambient;
+		this.ka = ka;
+		this.kd = kd;
+		this.ks = ks;
+		this.n = n;
+	}
+	
+	public double illumination() {
+		double res = 0;
+		return res;
+	}
+	
+	public int[] shading() {
+		int[] res = new int[3];
+		return res;
+	}
+}
