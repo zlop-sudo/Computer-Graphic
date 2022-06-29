@@ -1,6 +1,12 @@
 # Computer-Graphic
 A project based on a course of computer Graphic
 
+## result
+
+https://github.com/zlop-sudo/Computer-Graphic/blob/master/Lab4/lab_4_results.docx
+
+https://github.com/zlop-sudo/Computer-Graphic/blob/master/Lab5/result_lab5.docx
+
 # Lab1
 
 There are 3 packages : graphic, GUI and helper
